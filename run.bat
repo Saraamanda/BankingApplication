@@ -1,0 +1,1 @@
+start /b seaport listen 9090  && nodemon index.js
