@@ -343,48 +343,6 @@ describe("Account tests", () => {
     describe("/PUT edit last added account", () => {
         it("Should edit last added account", (done) => {
             chai
-                .request(baseUrl)
-                .get("/accounts")
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    const latest = res.body[res.body.length - 1];
-                    chai
-                        .request(baseUrl)
-                        .put(`/accounts/${latest._id}`)
-                        .send({
-                            balance: 100,
-                            alias: "EDITED",
-                        })
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            res.body.balance.should.be.equal(100);
-                            res.body.alias.should.be.equal("EDITED");
-                            done();
-                        });
-                });
-        });
-    });
-
-    describe("/PUT transfer balance between two accounts", () => {
-        it("Should transfer 50 between two accounts", (done) => {
-            // first get two accounts
-            chai
-                .request(app)
-                .get("/accounts")
-                .end((err, res) => {
-                    res.should.have.status(200);
-
-                    done();
-                });
-        });run
-    });
-
-
-
-
-    describe("/PUT edit last added account", () => {
-        it("Should edit last added account", (done) => {
-            chai
                 .request(app)
                 .get("/accounts")
                 .end((err, res) => {
@@ -406,6 +364,22 @@ describe("Account tests", () => {
                 });
         });
     });
+
+    /*describe("/PUT transfer balance between two accounts", () => {
+        it("Should transfer 50 between two accounts", (done) => {
+            // first get two accounts
+            chai
+                .request(app)
+                .get("/accounts")
+                .end((err, res) => {
+                    res.should.have.status(200);
+
+                    done();
+                });
+        });run
+    }); */
+
+
 
     describe("/DELETE delete last added account", () => {
         it("Should delete last added account", (done) => {
@@ -430,6 +404,33 @@ describe("Account tests", () => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
                                     res.body.length===accountsLength + 1;
+                                    done();
+                                });
+                        });
+                });
+        });
+        it("Should delete last added account2", (done) => {
+            chai
+                .request(app)
+                .get("/accounts")
+                .end((err, res) => {
+                    res.body.length.should.be.above(0);
+                    res.should.have.status(200);
+                    const id = res.body[res.body.length - 1]._id;
+                    chai
+                        .request(app)
+                        .delete(`/accounts/${id}`)
+                        .end((err, res) => {
+                            res.should.have.status(200);
+
+                            res.should.have.status(200);
+                            chai
+                                .request(app)
+                                .get("/accounts")
+                                .end((err, res) => {
+                                    res.should.have.status(200);
+                                    res.body.should.be.a("array");
+                                    res.body.length===accountsLength;
                                     done();
                                 });
                         });
