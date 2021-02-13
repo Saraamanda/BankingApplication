@@ -22,18 +22,38 @@ let connection = mongoose.connect("mongodb://localhost:27017/Bankingapplication"
     useUnifiedTopology: true,
 });
 
-const clientTemplate = () => {
+const clientTemplate1 = () => {
     return {
-        firstName: "Created in",
-        lastName: "test file",
+        _id: 13,
+        firstname: "Created in 13",
+        lastname: "test file",
         streetAddress: `Solbjerg Plads ${Math.ceil(Math.random() * 1000)}`,
         city: `TEST`,
     };
 };
 
-const accountTemplate = () => {
+const clientTemplate2 = () => {
     return {
-        _id:1,
+        _id: 14,
+        firstname: "Created in 14",
+        lastname: "test file",
+        streetAddress: `Solbjerg Plads ${Math.ceil(Math.random() * 1000)}`,
+        city: `TEST`,
+    };
+};
+
+const accountTemplate1 = () => {
+    return {
+        _id:11,
+        client_id: 'Sara',
+        balance: Math.floor(Math.random() * 100_000),
+        alias: `TEST account ${Math.floor(Math.random() * 10)}`,
+    };
+};
+const accountTemplate2 = () => {
+    return {
+        _id:12,
+        client_id: 'Sasha',
         balance: Math.floor(Math.random() * 100_000),
         alias: `TEST account ${Math.floor(Math.random() * 10)}`,
     };
@@ -78,9 +98,10 @@ describe("Client tests", () => {
             chai
                 .request(app)
                 .post("/clients")
-                .send(clientTemplate())
+                .send(clientTemplate1())
                 .end((err, res) => {
-                    console.log(res.body)
+                    console.log(res.body);
+                    res.should.have.status(200);
 
                     lastAdded = res.body;
                     done();
@@ -90,9 +111,9 @@ describe("Client tests", () => {
             chai
                 .request(app)
                 .post("/clients")
-                .send(clientTemplate())
+                .send(clientTemplate2())
                 .end((err, res) => {
-
+                    res.should.have.status(200);
                     if(res.body){
                         console.log('200');
                     }
@@ -113,7 +134,7 @@ describe("Client tests", () => {
 
                     res.should.have.status;
                     res.body.should.be.a("array");
-                    res.body.length.should.be.eql(res.body.length);
+                    res.body.length.should.be.eql(clientsLength + 2);
                     done();
                 });
         });
@@ -193,7 +214,33 @@ describe("Client tests", () => {
                                 .end((err, res) => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
-                                    res.body.length===clientsLength + 1;
+                                    res.body.length.should.be.eql(clientsLength + 1);
+                                    done();
+                                });
+                        });
+                });
+        });
+        it("Should delete last added 2nd client", (done) => {
+            chai
+                .request(app)
+                .get("/clients")
+                .end( (err, res) => {
+                    res.should.have.status(200);
+                    const id = res.body[res.body.length - 1]._id;
+                    console.log(id)
+                    chai
+                        .request(app)
+                        .delete(`/clients/${id}`)
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            res.should.have.status(200);
+                            chai
+                                .request(app)
+                                .get("/clients")
+                                .end((err, res) => {
+                                    res.should.have.status(200);
+                                    res.body.should.be.a("array");
+                                    res.body.length.should.be.eql(clientsLength);
                                     done();
                                 });
                         });
@@ -230,7 +277,7 @@ describe("Account tests", () => {
     });
     describe("/POST accounts", () => {
         it("it should POST account 1", (done) => {
-            let account = accountTemplate();
+            let account = accountTemplate1();
             account.client_id = account._id;
             chai
                 .request(app)
@@ -243,7 +290,7 @@ describe("Account tests", () => {
                 });
         });
         it("it should POST account 2", (done) => {
-            let account = accountTemplate();
+            let account = accountTemplate2();
             account.client_id = account._id;
             chai
                 .request(app)
@@ -263,7 +310,7 @@ describe("Account tests", () => {
                 .get("/accounts")
                 .end((err, res) => {
                     res.should.have.status(200);
-
+                    res.body.length.should.be.eql(accountsLength + 2);
                     done();
                 });
         });
@@ -293,6 +340,31 @@ describe("Account tests", () => {
         });
     });
 
+    describe("/PUT edit last added account", () => {
+        it("Should edit last added account", (done) => {
+            chai
+                .request(baseUrl)
+                .get("/accounts")
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    const latest = res.body[res.body.length - 1];
+                    chai
+                        .request(baseUrl)
+                        .put(`/accounts/${latest._id}`)
+                        .send({
+                            balance: 100,
+                            alias: "EDITED",
+                        })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            res.body.balance.should.be.equal(100);
+                            res.body.alias.should.be.equal("EDITED");
+                            done();
+                        });
+                });
+        });
+    });
+
     describe("/PUT transfer balance between two accounts", () => {
         it("Should transfer 50 between two accounts", (done) => {
             // first get two accounts
@@ -304,7 +376,7 @@ describe("Account tests", () => {
 
                     done();
                 });
-        });
+        });run
     });
 
 
