@@ -365,7 +365,7 @@ describe("Account tests", () => {
         });
     });
 
-    /*describe("/PUT transfer balance between two accounts", () => {
+    describe("/PUT transfer balance between two accounts", () => {
         it("Should transfer 50 between two accounts", (done) => {
             // first get two accounts
             chai
@@ -373,11 +373,43 @@ describe("Account tests", () => {
                 .get("/accounts")
                 .end((err, res) => {
                     res.should.have.status(200);
-
-                    done();
+                    res.body.length.should.be.above(1);
+                    const fromAccountBefore = res.body[0]; //id:11
+                    const toAccountBefore = res.body[res.body.length - 1]; // id:12
+                    const amount = 50;
+                    chai
+                        .request(app)
+                        .put(`/accounts/transfer/${fromAccountBefore._id}`)
+                        .send({
+                            fromAccount: fromAccountBefore._id,
+                            toAccount: toAccountBefore._id,
+                            amount: 50,
+                        })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            chai
+                                .request(app)
+                                .get(`/accounts/${fromAccountBefore._id}`)
+                                .end((err, res) => {
+                                    res.should.have.status(200);
+                                    res.body.balance.should.be.equal(
+                                        fromAccountBefore.balance - amount
+                                    );
+                                    chai
+                                        .request(app)
+                                        .get(`/accounts/${toAccountBefore._id}`)
+                                        .end((err, res) => {
+                                            res.should.have.status(200);
+                                            res.body.balance.should.be.equal(
+                                                toAccountBefore.balance + amount
+                                            );
+                                            done();
+                                        });
+                                });
+                        });
                 });
-        });run
-    }); */
+        });
+    });
 
 
 
