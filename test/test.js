@@ -79,14 +79,8 @@ describe("Client tests", () => {
                 .request(app)
                 .get("/clients")
                 .end(function (err, res)  {
-
-                    if(res.body){
-                        console.log('200');
-                    }
-                   if(res.body){
-                       console.log(res.text)
-                   }
-                   //res.body.should.be.a('array');
+                    res.should.have.status(200);
+                    res.body.should.be.a("array");
                     clientsLength = res.body.length;
                     //   res.body.length.should.be.eql(0);
                     done();
@@ -100,9 +94,7 @@ describe("Client tests", () => {
                 .post("/clients")
                 .send(clientTemplate1())
                 .end((err, res) => {
-                    console.log(res.body);
                     res.should.have.status(200);
-
                     lastAdded = res.body;
                     done();
                 });
@@ -114,12 +106,6 @@ describe("Client tests", () => {
                 .send(clientTemplate2())
                 .end((err, res) => {
                     res.should.have.status(200);
-                    if(res.body){
-                        console.log('200');
-                    }
-                    if(res.body){
-                        console.log(res.text)
-                    }
                     lastAdded = res.body;
                     done();
                 });
@@ -201,7 +187,6 @@ describe("Client tests", () => {
                 .end( (err, res) => {
                     res.should.have.status(200);
                     const id = res.body[res.body.length - 1]._id;
-                    console.log(id)
                     chai
                         .request(app)
                         .delete(`/clients/${id}`)
@@ -227,7 +212,6 @@ describe("Client tests", () => {
                 .end( (err, res) => {
                     res.should.have.status(200);
                     const id = res.body[res.body.length - 1]._id;
-                    console.log(id)
                     chai
                         .request(app)
                         .delete(`/clients/${id}`)
