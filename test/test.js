@@ -82,6 +82,12 @@ describe("Client tests", () => {
                     res.should.have.status(200);
                     res.body.should.be.a("array");
                     clientsLength = res.body.length;
+                    if(res.body){
+                        console.log('200');
+                    }
+                    if(res.body){
+                        console.log(res.text);
+                    }
                     //   res.body.length.should.be.eql(0);
                     done();
                 });
@@ -121,6 +127,8 @@ describe("Client tests", () => {
                     res.should.have.status;
                     res.body.should.be.a("array");
                     res.body.length.should.be.eql(clientsLength + 2);
+                    console.log("Total number of clients " + res.body.length);
+                    console.log(res.body);
                     done();
                 });
         });
@@ -145,6 +153,7 @@ describe("Client tests", () => {
                             res.body.firstname===lastAdded.firstname;
                             res.body.lastname===lastAdded.lastname;
                             res.body.city===lastAdded.city;
+                            console.log(res.body);
                             done();
                         });
                 });
@@ -200,6 +209,7 @@ describe("Client tests", () => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
                                     res.body.length.should.be.eql(clientsLength + 1);
+                                    console.log("Total number of clients after deletion " + res.body.length);
                                     done();
                                 });
                         });
@@ -225,6 +235,7 @@ describe("Client tests", () => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
                                     res.body.length.should.be.eql(clientsLength);
+                                    console.log("Total number of clients after deletion " + res.body.length);
                                     done();
                                 });
                         });
@@ -255,6 +266,12 @@ describe("Account tests", () => {
                     res.body.should.be.a("array");
                     accountsLength = res.body.length;
                     res.should.have.status(200);
+                    if(res.body){
+                        console.log('200');
+                    }
+                    if(res.body){
+                        console.log(res.body);
+                    }
                     done();
                 });
         });
@@ -295,6 +312,8 @@ describe("Account tests", () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.length.should.be.eql(accountsLength + 2);
+                    console.log("Total number of accounts " + res.body.length);
+                    console.log(res.body);
                     done();
                 });
         });
@@ -318,6 +337,7 @@ describe("Account tests", () => {
                             res.body.balance===lastAddedAcc.balance;
                             res.body.alias===lastAddedAcc.alias;
                             res.body.client_id===lastAddedAcc.client_id;
+                            console.log(res.body);
                             done();
                         });
                 });
@@ -360,6 +380,8 @@ describe("Account tests", () => {
                     res.body.length.should.be.above(1);
                     const fromAccountBefore = res.body[0]; //id:11
                     const toAccountBefore = res.body[res.body.length - 1]; // id:12
+                    console.log("FromAccount Before :" + JSON.stringify(fromAccountBefore));
+                    console.log("ToAccount Before :" + JSON.stringify(toAccountBefore));
                     const amount = 50;
                     chai
                         .request(app)
@@ -387,6 +409,7 @@ describe("Account tests", () => {
                                             res.body.balance.should.be.equal(
                                                 toAccountBefore.balance + amount
                                             );
+                                            console.log("ToAccount After :" + JSON.stringify(res.body));
                                             done();
                                         });
                                 });
@@ -420,6 +443,7 @@ describe("Account tests", () => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
                                     res.body.length===accountsLength + 1;
+                                    console.log("Total number of accounts after deletion " + res.body.length);
                                     done();
                                 });
                         });
@@ -447,6 +471,7 @@ describe("Account tests", () => {
                                     res.should.have.status(200);
                                     res.body.should.be.a("array");
                                     res.body.length===accountsLength;
+                                    console.log("Total number of accounts after deletion " + res.body.length);
                                     done();
                                 });
                         });
